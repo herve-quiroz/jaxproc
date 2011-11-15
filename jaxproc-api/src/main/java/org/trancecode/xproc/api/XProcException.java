@@ -21,7 +21,7 @@ import javax.xml.stream.Location;
 /**
  * @author Herve Quiroz
  */
-public class XProcException extends PipelineException
+public final class XProcException extends PipelineException
 {
     private static final long serialVersionUID = -4241443703311041795L;
 
@@ -116,5 +116,11 @@ public class XProcException extends PipelineException
         buffer.append(": ");
         buffer.append(super.getMessage());
         return buffer.toString();
+    }
+
+    public XProcException withCause(final Throwable cause)
+    {
+        this.initCause(cause);
+        return this;
     }
 }
