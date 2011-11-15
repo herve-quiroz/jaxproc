@@ -61,6 +61,20 @@
 
   <!-- ===================================================================== -->
 
+  <dependencyManagement>
+    <dependencies>
+
+      <dependency>
+        <groupId>org.trancecode.xproc.jaxproc</groupId>
+        <artifactId>jaxproc-api</artifactId>
+        <version>0.1.0-SNAPSHOT</version>
+      </dependency>
+
+    </dependencies>
+  </dependencyManagement>
+
+  <!-- ===================================================================== -->
+
   <profiles>
 
     <profile>
