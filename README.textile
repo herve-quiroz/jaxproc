@@ -1,0 +1,111 @@
+h1. JAXProc: Java API for XProc
+
+h2. Purpose
+
+TODO
+
+* A common API to use any XProc processor implementation in Java.
+* Switch easily between implementations.
+* Similar to TrAX from JAXP: @TransformerFactory@ / @Transformer@.
+* A common command-line interface for all Java XProc processors.
+* A common test suite for all Java XProc processors.
+
+h2. How to use
+
+TODO
+
+h4. Setup Maven repository
+
+<pre>
+TODO
+</pre>
+
+h4. Setup Maven dependencies
+
+<pre>
+TODO
+</pre>
+
+h4. Add a binding
+
+<pre>
+TODO
+</pre>
+
+h4. Get a @PipelineFactory@
+
+<pre>
+PipelineFactory factory = PipelineFactory.newInstance();
+</pre>
+
+h4. Configure the @PipelineFactory@
+
+<pre>
+factory.setProperty(XProcProperties.URI_RESOLVER, new MyCustomUriResolver());
+...
+Map<String, Object> properties = ...;
+factory.setProperties(properties);
+</pre>
+
+h4. Build a pipeline from a file
+
+<pre>
+Source pipelineSource = new StreamSource(few File("pipeline.xpl"));
+Pipeline pipeline = factory.newPipeline(pipelineSource);
+</pre>
+
+h4. Configure the pipeline
+
+<pre>
+pipeline.setOption("color", "blue");                                        <1>
+...
+Map<QName, Object> parameters = new HashMap<QName, String>();
+parameters.put(new QName("size"), 24);
+pipeline.setParameters(parameters);                                         <2>
+...
+pipeline.bindInputPort("source", new StreamSource(...));                    <3>
+pipeline.bindInputPort("stylesheet", "file:///path/to/my/stylesheet.xsl"));
+...
+pipeline.bindOutputPort("result", new StreamResult(...));                   <4>
+</pre>
+# Options are referenced using either a @QName@ or plain @String@ for convenience
+# You can set several options or parameters at once using a @Map@
+# You can bind an input port to either a @Source@, a @File@, or an URI (either the @java.net.URI@ class or a plain @String@)
+# You can bind an output port as well (@Result@, @File@ or URI)
+
+h4. Run the pipeline
+
+<pre>
+PipelineResult result = pipeline.execute();
+</pre>
+
+h4. Retrieve result documents
+
+<pre>
+result.readDocument("index", new StreamResult(...)); <1>
+Source index = result.readDocument("index");         <2>
+Iterable<Source> result.readDocuments("web-pages");  <3>
+</pre>
+# You can extract a document from an output port and write it to a JAXP @Result@
+# You can extract a document from an output port as a JAXP @Source@
+# You can extract several documents from a sequence output port
+
+h2. Bindings
+
+* Calabash (Norman Walsh)
+* Calumet (EMC)
+* Tubular
+* QuixProc?
+
+h2. Future plans
+
+* An event API to implement monitoring, reporting and possibly a debugger
+
+h2. How to contribute
+
+TODO
+
+h2. TODO
+
+* XProc test suite
+* command-line interface
