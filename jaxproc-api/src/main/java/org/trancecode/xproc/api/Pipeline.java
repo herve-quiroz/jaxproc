@@ -17,6 +17,9 @@ package org.trancecode.xproc.api;
 
 import java.io.File;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -68,21 +71,58 @@ public abstract class Pipeline
         }
     }
 
-    public abstract void bindInputPort(String name, Source source);
+    public abstract void bindInputPort(String name, Iterable<Source> sources);
 
-    public void bindInputPort(final String name, final File file)
+    public void bindInputPort(final String name, final Source... sources)
     {
-        bindInputPort(name, new StreamSource(file));
+        bindInputPort(name, Arrays.asList(sources));
     }
 
-    public void bindInputPort(final String name, final URI resource)
+    public void bindInputPortToFile(final String name, final File file)
     {
-        bindInputPort(name, new StreamSource(resource.toString()));
+        bindInputPortToFiles(name, file);
     }
 
-    public void bindInputPort(final String name, final String resource)
+    public void bindInputPortToFiles(final String name, final Iterable<File> files)
     {
-        bindInputPort(name, new StreamSource(resource));
+        final List<Source> sources = new ArrayList<Source>();
+        for (final File file : files)
+        {
+            sources.add(new StreamSource(file));
+        }
+
+        bindInputPort(name, sources);
+    }
+
+    public void bindInputPortToFiles(final String name, final File... files)
+    {
+        bindInputPortToFiles(name, Arrays.asList(files));
+    }
+
+    public void bindInputPortToResources(final String name, final Iterable<URI> resources)
+    {
+        final List<Source> sources = new ArrayList<Source>();
+        for (final URI resource : resources)
+        {
+            sources.add(new StreamSource(resource.toASCIIString()));
+        }
+
+        bindInputPort(name, sources);
+    }
+
+    public void bindInputPortToResources(final String name, final URI... resources)
+    {
+        bindInputPortToResources(name, Arrays.asList(resources));
+    }
+
+    public void bindInputPortToResource(final String name, final URI resource)
+    {
+        bindInputPort(name, new StreamSource(resource.toASCIIString()));
+    }
+
+    public void bindInputPortToResource(final String name, final String resource)
+    {
+        bindInputPortToResource(name, URI.create(resource));
     }
 
     public abstract void bindOutputPort(String name, Result result);
