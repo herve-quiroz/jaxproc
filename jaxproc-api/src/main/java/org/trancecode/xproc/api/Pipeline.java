@@ -18,6 +18,7 @@ package org.trancecode.xproc.api;
 import java.io.File;
 import java.net.URI;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.xml.namespace.QName;
 import javax.xml.transform.Result;
@@ -44,7 +45,13 @@ public abstract class Pipeline
         setParameter(new QName(name), value);
     }
 
-    public abstract void setParameters(Map<QName, Object> parameters);
+    public void setParameters(final Map<QName, Object> parameters)
+    {
+        for (final Entry<QName, Object> parameter : parameters.entrySet())
+        {
+            setParameter(parameter.getKey(), parameter.getValue());
+        }
+    }
 
     public abstract void setOption(QName name, Object value);
 
@@ -53,7 +60,13 @@ public abstract class Pipeline
         setOption(new QName(name), value);
     }
 
-    public abstract void setOptions(Map<QName, Object> parameters);
+    public void setOptions(final Map<QName, Object> options)
+    {
+        for (final Entry<QName, Object> option : options.entrySet())
+        {
+            setParameter(option.getKey(), option.getValue());
+        }
+    }
 
     public abstract void bindInputPort(String name, Source source);
 
