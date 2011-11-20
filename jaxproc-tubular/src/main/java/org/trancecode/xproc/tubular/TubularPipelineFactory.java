@@ -16,9 +16,15 @@
 package org.trancecode.xproc.tubular;
 
 import javax.xml.transform.Source;
+import javax.xml.transform.URIResolver;
 
+import org.trancecode.xproc.PipelineConfiguration;
+import org.trancecode.xproc.PipelineProcessor;
+import org.trancecode.xproc.Tubular;
+import org.trancecode.xproc.XProcException;
 import org.trancecode.xproc.api.Pipeline;
 import org.trancecode.xproc.api.PipelineFactory;
+import org.trancecode.xproc.api.XProcProperties;
 
 /**
  * @author Herve Quiroz
@@ -28,49 +34,57 @@ public final class TubularPipelineFactory extends PipelineFactory
     @Override
     public Pipeline newPipeline(final Source pipelineSource)
     {
-        // TODO TubularPipelineFactory.newPipeline()
-        throw new UnsupportedOperationException();
+        final PipelineConfiguration configuration = new PipelineConfiguration();
+        final URIResolver uriResolver = (URIResolver) getProperties().get(XProcProperties.URI_RESOLVER);
+        if (uriResolver != null)
+        {
+            configuration.setUriResolver(uriResolver);
+        }
+
+        final PipelineProcessor processor = new PipelineProcessor(configuration);
+        try
+        {
+            return new TubularPipeline(processor.buildPipeline(pipelineSource).load());
+        }
+        catch (final XProcException e)
+        {
+            throw TubularExceptions.toXProcException(e);
+        }
     }
 
     @Override
     public String getVersion()
     {
-        // TODO TubularPipelineFactory.getVersion()
-        throw new UnsupportedOperationException();
+        return Tubular.version();
     }
 
     @Override
     public String getXProcVersion()
     {
-        // TODO TubularPipelineFactory.getXProcVersion()
-        throw new UnsupportedOperationException();
+        return Tubular.xprocVersion();
     }
 
     @Override
     public String getXPathVersion()
     {
-        // TODO TubularPipelineFactory.getXPathVersion()
-        throw new UnsupportedOperationException();
+        return Tubular.xpathVersion();
     }
 
     @Override
     public String getProductName()
     {
-        // TODO TubularPipelineFactory.getProductName()
-        throw new UnsupportedOperationException();
+        return Tubular.productName();
     }
 
     @Override
     public String getVendor()
     {
-        // TODO TubularPipelineFactory.getVendor()
-        throw new UnsupportedOperationException();
+        return Tubular.vendor();
     }
 
     @Override
     public String getVendorUri()
     {
-        // TODO TubularPipelineFactory.getVendorUri()
-        throw new UnsupportedOperationException();
+        return Tubular.vendorUri();
     }
 }
