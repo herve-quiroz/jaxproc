@@ -32,6 +32,7 @@
       <groupId>org.trancecode</groupId>
       <artifactId>tubular-core</artifactId>
       <version>0.1.0-SNAPSHOT</version>
+      <scope>provided</scope>
     </dependency>
 
   </dependencies>
