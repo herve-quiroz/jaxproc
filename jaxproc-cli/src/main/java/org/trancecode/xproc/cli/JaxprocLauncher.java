@@ -16,6 +16,7 @@
 package org.trancecode.xproc.cli;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Maps;
 
 import java.net.URI;
 import java.util.Map;
@@ -37,9 +38,9 @@ public final class JaxprocLauncher implements Runnable
     private static final String VARIABLE_REGEX = "([^=]+)=([^=]+)";
 
     private URI libraryUri;
-    private Map<QName, Object> options;
-    private Map<QName, Object> parameters;
-    private Map<String, URI> ports;
+    private final Map<QName, Object> options = Maps.newHashMap();
+    private final Map<QName, Object> parameters = Maps.newHashMap();
+    private final Map<String, URI> ports = Maps.newHashMap();
     private URI pipelineUri;
 
     @Flag(shortOption = "x", longOption = "xpl", description = "XProc pipeline to load and run")
