@@ -39,17 +39,18 @@ import java.util.ServiceLoader;
 import javax.xml.namespace.QName;
 
 import org.trancecode.logging.Logger;
+import org.trancecode.opts.AbstractLog4jLauncher;
 import org.trancecode.opts.Command;
-import org.trancecode.opts.CommandLineExecutor;
-import org.trancecode.opts.Flag;
-import org.trancecode.opts.Switch;
+import org.trancecode.opts.Name;
+import org.trancecode.opts.Option;
+import org.trancecode.opts.Options;
 import org.trancecode.xproc.api.PipelineFactory;
 
 /**
  * @author Herve Quiroz
  */
 @Command("java -jar jaxproc.jar")
-public final class JaxprocLauncher implements Runnable
+public final class JaxprocLauncher extends AbstractLog4jLauncher implements Runnable
 {
     private static final String VARIABLE_REGEX = "([^=]+)=([^=]+)";
     private static final Logger LOG = Logger.getLogger(JaxprocLauncher.class);
@@ -69,20 +70,20 @@ public final class JaxprocLauncher implements Runnable
     private final Map<String, URI> ports = Maps.newHashMap();
     private URI pipelineUri;
 
-    @Flag(shortOption = "x", longOption = "xpl", description = "XProc pipeline to load and run")
-    public void setPipelineUri(final String pipelineUri)
+    @Option(shortName = "x", longName = "xpl", description = "XProc pipeline to load and run")
+    public void setPipelineUri(@Name("URI") final String pipelineUri)
     {
         this.pipelineUri = URI.create(pipelineUri);
     }
 
-    @Flag(shortOption = "l", longOption = "library", description = "XProc pipeline library to load")
-    public void setLibraryUri(final String libraryUri)
+    @Option(shortName = "l", longName = "library", description = "XProc pipeline library to load")
+    public void setLibraryUri(@Name("URI") final String libraryUri)
     {
         this.libraryUri = URI.create(libraryUri);
     }
 
-    @Flag(shortOption = "c", longOption = "classpath", description = "Add some URL to the classpath")
-    public void addClasspathUrl(final String url)
+    @Option(shortName = "c", longName = "classpath", description = "Add some URL to the classpath", multiple = true)
+    public void addClasspathUrl(@Name("URL") final String url)
     {
         try
         {
@@ -94,8 +95,8 @@ public final class JaxprocLauncher implements Runnable
         }
     }
 
-    @Flag(shortOption = "o", longOption = "option", description = "Passes an option to the pipeline")
-    public void setOption(final String option)
+    @Option(shortName = "o", longName = "option", description = "Passes an option to the pipeline", multiple = true)
+    public void setOption(@Name("KEY=VALUE") final String option)
     {
         Preconditions.checkArgument(option.matches(VARIABLE_REGEX), "option does not match <name=value> pattern: %s",
                 option);
@@ -105,8 +106,8 @@ public final class JaxprocLauncher implements Runnable
         options.put(name, value);
     }
 
-    @Flag(shortOption = "p", longOption = "parameter", description = "Passes a parameter to the pipeline")
-    public void setParameter(final String parameter)
+    @Option(shortName = "p", longName = "parameter", description = "Passes a parameter to the pipeline", multiple = true)
+    public void setParameter(@Name("KEY=VALUE") final String parameter)
     {
         Preconditions.checkArgument(parameter.matches(VARIABLE_REGEX),
                 "parameter does not match <name=value> pattern: %s", parameter);
@@ -132,7 +133,7 @@ public final class JaxprocLauncher implements Runnable
         return String.format("%s version %s", mavenProperties.get("artifactId"), mavenProperties.get("version"));
     }
 
-    @Switch(shortOption = "V", longOption = "version", description = "Print version and exit", exit = true)
+    @Option(shortName = "V", longName = "version", description = "Print version and exit", exit = true)
     public void printVersion()
     {
         System.out.println(getLauncherInformation());
@@ -140,7 +141,7 @@ public final class JaxprocLauncher implements Runnable
         System.out.println(PipelineFactory.newInstance());
     }
 
-    @Switch(shortOption = "L", longOption = "list-processors", description = "List available XProc processors and exit", exit = true)
+    @Option(shortName = "L", longName = "list-processors", description = "List available XProc processors and exit", exit = true)
     public void listProcessors()
     {
         setupClassLoader();
@@ -198,6 +199,6 @@ public final class JaxprocLauncher implements Runnable
 
     public static void main(final String[] args) throws Exception
     {
-        CommandLineExecutor.execute(JaxprocLauncher.class, args);
+        Options.execute(JaxprocLauncher.class, args);
     }
 }
