@@ -5,12 +5,6 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>org.trancecode</groupId>
-    <artifactId>trancecode</artifactId>
-    <version>11</version>
-  </parent>
-
   <groupId>org.trancecode.xproc.jaxproc</groupId>
   <artifactId>jaxproc</artifactId>
   <version>0.1.0-SNAPSHOT</version>
@@ -31,25 +25,80 @@
 
   <ciManagement>
     <system>Jenkins</system>
-    <url>http://ci.trancecode.org/jekins/job/java-xproc-api</url>
+    <url>http://ci.trancecode.org/jekins/job/jaxproc</url>
   </ciManagement>
 
   <scm>
-    <connection>scm:hg:https://code.google.com/p/jaxproc/</connection>
-    <developerConnection>scm:hg:file://${basedir}</developerConnection>
-    <url>https://code.google.com/p/jaxproc/</url>
+    <connection>scm:git:git@github.com:herve-quiroz/jaxproc.git</connection>
+    <developerConnection>scm:git:file://${basedir}</developerConnection>
+    <url>https://github.com/herve-quiroz/jaxproc</url>
   </scm>
+
+  <!-- ===================================================================== -->
+
+  <developers>
+
+    <developer>
+      <name>Herve Quiroz</name>
+      <email>herve.quiroz@trancecode.org</email>
+      <organization>TranceCode</organization>
+      <organizationUrl>http://www.trancecode.org</organizationUrl>
+      <timezone>+1</timezone>
+    </developer>
+
+  </developers>
 
   <!-- ===================================================================== -->
 
   <repositories>
 
     <repository>
+      <id>external.trancecode.org</id>
+      <name>TranceCode repository for 3rd party artifacts</name>
+      <url>http://maven.trancecode.org/external/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+
+    <repository>
       <id>releases.trancecode.org</id>
+      <name>TranceCode repository for release artifacts</name>
       <url>http://maven.trancecode.org/releases/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+
+    <repository>
+      <id>snapshots.trancecode.org</id>
+      <name>TranceCode repository for snapshot artifacts</name>
+      <url>http://maven.trancecode.org/snapshots/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
     </repository>
 
   </repositories>
+
+  <!-- ===================================================================== -->
+
+  <properties>
+
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <test.quiet>true</test.quiet>
+    <surefire.vm.args />
+
+  </properties>
 
   <!-- ===================================================================== -->
 
@@ -95,51 +144,157 @@
 
   <!-- ===================================================================== -->
 
-  <profiles>
-
-    <profile>
-
-      <activation>
-        <property>
-          <name>eclipse.launcher.name</name>
-          <value>!Eclipse</value>
-        </property>
-      </activation>
-
-      <build>
-        <plugins>
-
-          <plugin>
-            <groupId>org.trancecode.maven.plugins</groupId>
-            <artifactId>maven-textile-plugin</artifactId>
-            <version>1.0.0</version>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>readme</goal>
-                  <goal>format</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-
-        </plugins>
-      </build>
-    </profile>
-
-  </profiles>
-
-  <!-- ===================================================================== -->
-
   <build>
-    <plugins>
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-      </plugin>
+    <extensions>
 
-    </plugins>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ssh-external</artifactId>
+        <version>2.1</version>
+      </extension>
+
+    </extensions>
+
+    <pluginManagement>
+      <plugins>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>2.1</version>
+          <configuration>
+            <source>1.6</source>
+            <target>1.6</target>
+            <showWarnings>true</showWarnings>
+            <showDeprecation>true</showDeprecation>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>2.3</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>2.7</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>2.8</version>
+          <configuration>
+            <detectLinks>true</detectLinks>
+            <links>
+              <link>http://java.sun.com/javase/6/docs/api/</link>
+            </links>
+            <source>1.6</source>
+            <failOnError>false</failOnError>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>2.3.2</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-pmd-plugin</artifactId>
+          <version>2.6</version>
+          <configuration>
+            <targetJdk>1.6</targetJdk>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>2.2.1</version>
+          <configuration>
+            <goals>deploy</goals>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>1.5</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>2.1.1</version>
+          <executions>
+            <execution>
+              <id>attach-sources</id>
+              <phase>verify</phase>
+              <goals>
+                <goal>jar</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.10</version>
+          <configuration>
+            <argLine>-Xms128m -Xmx128m ${surefire.vm.args}</argLine>
+            <forkMode>once</forkMode>
+            <reportFormat>brief</reportFormat>
+            <systemProperties>
+              <property>
+                <name>project.build.directory</name>
+                <value>${project.build.directory}</value>
+              </property>
+              <property>
+                <name>test.quiet</name>
+                <value>${test.quiet}</value>
+              </property>
+            </systemProperties>
+            <testFailureIgnore>true</testFailureIgnore>
+            <workingDirectory>${project.build.directory}</workingDirectory>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>cobertura-maven-plugin</artifactId>
+          <version>2.2</version>
+          <configuration>
+            <formats>
+              <format>html</format>
+              <format>xml</format>
+            </formats>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>findbugs-maven-plugin</artifactId>
+          <version>2.3.1</version>
+          <configuration>
+            <xmlOutput>true</xmlOutput>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>javancss-maven-plugin</artifactId>
+          <version>2.0</version>
+        </plugin>
+
+      </plugins>
+    </pluginManagement>
+
   </build>
 
   <!-- ===================================================================== -->
