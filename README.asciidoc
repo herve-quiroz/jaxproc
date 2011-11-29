@@ -135,30 +135,36 @@ Pipeline pipeline = factory.newPipeline(pipelineSource);
 
 ==== Configure the pipeline
 
-.Options are referenced using either a QName or plain String for convenience
+Options are referenced using either a QName or plain String for convenience:
+
 ----
 pipeline.setOption("color", "blue");
 ----
-...
-.You can set several options or parameters at once using a Map
+
+You can set several options or parameters at once using a Map:
+
 ----
 Map<QName, Object> parameters = new HashMap<QName, String>();
 parameters.put(new QName("size"), 24);
 pipeline.setParameters(parameters);
 ----
 
-.You can bind an input port to either a `Source`, a `File`, or an URI (either the `java.net.URI` class or a plain `String`)
+You can bind an input port to either a `Source`, a `File`, or an URI (either
+the `java.net.URI` class or a plain `String`):
+
 ----
 pipeline.bindInputPort("source", new StreamSource(...));
 pipeline.bindInputPortToResource("stylesheet", "file:///path/to/my/stylesheet.xsl"));
 ----
 
-.You can bind an input port to sequence of documents (the method accepts varargs)
+You can bind an input port to sequence of documents (the method accepts
+varargs):
+
 ----
 pipeline.bindInputPortToFiles("extra", file1, file2, file3);
 ----
 
-.You can bind an output port as well (Result, File or URI)
+You can bind an output port as well (Result, File or URI):
 ----
 pipeline.bindOutputPort("result", new StreamResult(...));
 ----
@@ -171,17 +177,19 @@ PipelineResult result = pipeline.execute();
 
 ==== Retrieve result documents
 
-.You can extract a document from an output port and write it to a JAXP Result
+You can extract a document from an output port and write it to a JAXP Result:
+
 ----
 result.readDocument("index", new StreamResult(...));
 ----
 
-.You can extract a document from an output port as a JAXP `Source`
+You can extract a document from an output port as a JAXP `Source`:
+
 ----
 Source index = result.readDocument("index");
 ----
 
-.You can extract several documents from a sequence output port
+You can extract several documents from a sequence output port:
 ----
 Iterable<Source> result.readDocuments("web-pages");
 ----
@@ -195,12 +203,14 @@ Iterable<Source> result.readDocuments("web-pages");
 
 === jaxproc-api
 
-- Add a discovery mechanism (`ServiceLoader`) for standard XML-related resolvers (e.g. `URIResolver`)
+- Add a discovery mechanism (`ServiceLoader`) for standard XML-related
+  resolvers (e.g. `URIResolver`)
 
 === jaxproc-cli
 
 - Add -Dname=value to set system properties
-- Add `-P` (`--processor`) to select a specific processor (by class name or by alias)
+- Add `-P` (`--processor`) to select a specific processor (by class name or by
+  alias)
 - Add more traces
 
 === jaxproc-test-suite
