@@ -1,0 +1,203 @@
+= JAXProc: Java API for XProc
+
+// vim: set syntax=asciidoc:
+// vim: set spell:
+
+== Purpose
+
+JAXProc is a common API for http://www.w3.org/TR/xproc/[XProc] pipeline
+processors.
+
+It is similar in its approach to the
+http://en.wikipedia.org/wiki/Java_API_for_XML_Processing[Java API for XML
+Processing (JAXP)]. Using this unique API, client code can easily switch
+between XProc processor implementations. The API is based on the same pattern
+as TrAX from JAXP:
+
+- Available `PipelineFactory` implementations may be discovered from the
+  classpath (i.e. like
+  http://docs.oracle.com/javase/6/docs/api/javax/xml/transform/TransformerFactory.html[`TransformerFactory`])
+- A `PipelineFactory` is used to build `Pipeline` instances (the same way a
+  http://docs.oracle.com/javase/6/docs/api/javax/xml/transform/TransformerFactory.html[`TransformerFactory`]
+  builds
+  http://docs.oracle.com/javase/6/docs/api/javax/xml/transform/Transformer.html[`Transformer`]
+  instances)
+
+JAXProc also provides a generic command-line interface to run XProc pipelines.
+
+In the future, JAXProc will also provide a way to run the official
+http://tests.xproc.org/[XProc test suite] using the processor of your choice.
+
+== How to use
+
+=== Command-line interface
+
+----
+usage: java -jar jaxproc.jar [options]
+
+ -o --option KEY=VALUE [+]    Passes an option to the pipeline
+ -l --library URI [+]         XProc pipeline library to load
+ -p --parameter KEY=VALUE [+] Passes a parameter to the pipeline
+ -c --classpath URL [+]       Add some URL to the classpath
+ -x --xpl URI [+]             XProc pipeline to load and run
+ -h --help                    Print help and exit
+ -L --list-processors         List available XProc processors and exit
+ -V --version                 Print version and exit
+
+[+] marked option can be specified multiple times
+----
+
+=== Java API
+
+==== Maven configuration
+
+To add JAXProc to your http://maven.apache.org/[Maven] project, add the
+following to the POM:
+
+----
+  ...
+
+  <repositories>
+
+    <repository>
+      <id>snapshots.trancecode.org</id>
+      <url>http://maven.trancecode.org/snapshots/</url>
+    </repository>
+
+  </repositories>
+
+  ...
+
+  <dependencies>
+
+    ...
+
+    <dependency>
+      <groupId>org.trancecode.xproc.jaxproc</groupId>
+      <artifactId>jaxproc-api</artifactId>
+      <version>0.1.0-SNAPSHOT</version>
+    </dependency>
+
+    ...
+
+  </dependencies>
+
+  ...
+----
+
+==== Add a binding
+
+You'll also need to add a dependency on a JAXProc implementation binding
+depending on the XProc processor you are using in your application.
+
+.Tubular
+----
+    <dependency>
+      <groupId>org.trancecode.xproc.jaxproc</groupId>
+      <artifactId>jaxproc-tubular</artifactId>
+      <version>0.1.0-SNAPSHOT</version>
+    </dependency>
+----
+
+.Calabash 0.9.40
+----
+    <dependency>
+      <groupId>org.trancecode.xproc.jaxproc</groupId>
+      <artifactId>jaxproc-calabash-0.9.40</artifactId>
+      <version>0.1.0-SNAPSHOT</version>
+    </dependency>
+----
+
+==== Get a `PipelineFactory`
+
+The main entry point in JAXProc API is the
+http://ci.trancecode.org/jenkins/job/jaxproc/javadoc/org/trancecode/xproc/api/PipelineFactory.html[PipelineFactory].
+
+----
+PipelineFactory factory = PipelineFactory.newInstance();
+----
+
+==== Configure the `PipelineFactory`
+
+----
+factory.setProperty(XProcProperties.URI_RESOLVER, new MyCustomUriResolver());
+...
+Map<String, Object> properties = ...;
+factory.setProperties(properties);
+----
+
+==== Build a pipeline from a file
+
+----
+Source pipelineSource = new StreamSource(few File("pipeline.xpl"));
+Pipeline pipeline = factory.newPipeline(pipelineSource);
+----
+
+==== Configure the pipeline
+
+----
+// Options are referenced using either a QName or plain String for convenience
+pipeline.setOption("color", "blue");
+...
+// You can set several options or parameters at once using a Map
+Map<QName, Object> parameters = new HashMap<QName, String>();
+parameters.put(new QName("size"), 24);
+pipeline.setParameters(parameters);
+...
+// You can bind an input port to either a Source, a File, or an URI (either the
+// java.net.URI class or a plain String)
+pipeline.bindInputPort("source", new StreamSource(...));
+pipeline.bindInputPortToResource("stylesheet", "file:///path/to/my/stylesheet.xsl"));
+...
+// You can bind an input port to sequence of documents
+// The method accepts varargs
+pipeline.bindInputPortToFiles("extra", file1, file2, file3);
+...
+// You can bind an output port as well (Result, File or URI)
+pipeline.bindOutputPort("result", new StreamResult(...));
+----
+
+==== Run the pipeline
+
+----
+PipelineResult result = pipeline.execute();
+----
+
+==== Retrieve result documents
+
+----
+// You can extract a document from an output port and write it to a JAXP Result
+result.readDocument("index", new StreamResult(...));
+...
+// You can extract a document from an output port as a JAXP Source
+Source index = result.readDocument("index");
+...
+// You can extract several documents from a sequence output port
+Iterable<Source> result.readDocuments("web-pages");
+----
+
+== Future plans
+
+- An event API to implement monitoring, reporting and possibly a debugger
+- A common test suite based on the official http://tests.xproc.org/[XProc test suite]
+
+== TODO
+
+=== jaxproc-api
+
+- Add a discovery mechanism (`ServiceLoader`) for standard XML-related resolvers (e.g. `URIResolver`)
+
+=== jaxproc-cli
+
+- Add -Dname=value to set system properties
+- Add `-P` (`--processor`) to select a specific processor (by class name or by alias)
+- Add more traces
+
+=== jaxproc-test-suite
+
+- Create a new module that runs the XProc test suite
+
+=== Other
+
+- Create bindings for EMC Calumet?
+- Create bindings for Quixproc?
