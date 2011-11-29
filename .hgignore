@@ -1,7 +1,0 @@
-syntax: regexp
-^README.html$
-^.*/README.html$
-^target$
-^.*/target$
-^test-output$
-^.*/test-output$
