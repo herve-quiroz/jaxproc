@@ -92,6 +92,23 @@
 
   <!-- ===================================================================== -->
 
+  <distributionManagement>
+
+    <repository>
+      <id>ssh.trancecode.org</id>
+      <url>scpexe://maven@maven.trancecode.org/home/maven/repository/releases/</url>
+    </repository>
+
+    <snapshotRepository>
+      <id>ssh.trancecode.org</id>
+      <url>scpexe://maven@maven.trancecode.org/home/maven/repository/snapshots/</url>
+      <uniqueVersion>false</uniqueVersion>
+    </snapshotRepository>
+
+  </distributionManagement>
+
+  <!-- ===================================================================== -->
+
   <properties>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
