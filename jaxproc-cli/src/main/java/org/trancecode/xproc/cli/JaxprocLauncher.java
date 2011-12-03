@@ -77,16 +77,20 @@ public final class JaxprocLauncher extends AbstractLog4jLauncher implements Runn
 
     @Option(shortName = "i", longName = "input-port", description = "Bind an input port to a ressource")
     @Argument(label = "NAME=URI", pattern = "^([^=]+)=([^=]+)$")
-    public void bindInputPort(final String binding)
+    public void bindInputPort(final String port, final URI resource)
     {
-        // TODO
+        Preconditions.checkArgument(!inputPorts.containsKey(port), "duplicate input port binding: %s = %s", port,
+                resource);
+        inputPorts.put(port, resource);
     }
 
     @Option(shortName = "o", longName = "output-port", description = "Bind an input port to a ressource")
     @Argument(label = "NAME=URI", pattern = "^([^=]+)=([^=]+)$")
-    public void bindOutputPort(final String binding)
+    public void bindOutputPort(final String port, final URI resource)
     {
-        // TODO
+        Preconditions.checkArgument(!outputPorts.containsKey(port), "duplicate output port binding: %s = %s", port,
+                resource);
+        outputPorts.put(port, resource);
     }
 
     @Option(shortName = "x", longName = "xpl", description = "XProc pipeline to load and run")
