@@ -33,10 +33,12 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.ServiceLoader;
 
 import javax.xml.namespace.QName;
+import javax.xml.transform.stream.StreamSource;
 
 import org.trancecode.logging.Logger;
 import org.trancecode.opts.AbstractLog4jLauncher;
@@ -44,7 +46,9 @@ import org.trancecode.opts.Command;
 import org.trancecode.opts.Name;
 import org.trancecode.opts.Option;
 import org.trancecode.opts.Options;
+import org.trancecode.xproc.api.Pipeline;
 import org.trancecode.xproc.api.PipelineFactory;
+import org.trancecode.xproc.api.PipelineResult;
 
 /**
  * @author Herve Quiroz
@@ -67,8 +71,21 @@ public final class JaxprocLauncher extends AbstractLog4jLauncher implements Runn
     private URI libraryUri;
     private final Map<QName, Object> options = Maps.newHashMap();
     private final Map<QName, Object> parameters = Maps.newHashMap();
-    private final Map<String, URI> ports = Maps.newHashMap();
+    private final Map<String, URI> inputPorts = Maps.newHashMap();
+    private final Map<String, URI> outputPorts = Maps.newHashMap();
     private URI pipelineUri;
+
+    @Option(shortName = "i", longName = "input-port", description = "Bind an input port to a ressource")
+    public void bindInputPort(@Name("NAME=URI") final String binding)
+    {
+        // TODO
+    }
+
+    @Option(shortName = "o", longName = "output-port", description = "Bind an input port to a ressource")
+    public void bindOutputPort(@Name("NAME=URI") final String binding)
+    {
+        // TODO
+    }
 
     @Option(shortName = "x", longName = "xpl", description = "XProc pipeline to load and run")
     public void setPipelineUri(@Name("URI") final String pipelineUri)
@@ -95,7 +112,7 @@ public final class JaxprocLauncher extends AbstractLog4jLauncher implements Runn
         }
     }
 
-    @Option(shortName = "o", longName = "option", description = "Passes an option to the pipeline", multiple = true)
+    @Option(shortName = "O", longName = "option", description = "Passes an option to the pipeline", multiple = true)
     public void setOption(@Name("KEY=VALUE") final String option)
     {
         Preconditions.checkArgument(option.matches(VARIABLE_REGEX), "option does not match <name=value> pattern: %s",
@@ -106,7 +123,7 @@ public final class JaxprocLauncher extends AbstractLog4jLauncher implements Runn
         options.put(name, value);
     }
 
-    @Option(shortName = "p", longName = "parameter", description = "Passes a parameter to the pipeline", multiple = true)
+    @Option(shortName = "P", longName = "parameter", description = "Passes a parameter to the pipeline", multiple = true)
     public void setParameter(@Name("KEY=VALUE") final String parameter)
     {
         Preconditions.checkArgument(parameter.matches(VARIABLE_REGEX),
@@ -193,8 +210,21 @@ public final class JaxprocLauncher extends AbstractLog4jLauncher implements Runn
     {
         setupClassLoader();
 
-        // TODO JaxprocLauncher.run()
-        throw new UnsupportedOperationException();
+        final PipelineFactory factory = PipelineFactory.newInstance();
+        final Pipeline pipeline = factory.newPipeline(new StreamSource(pipelineUri.toString()));
+        pipeline.setOptions(options);
+        pipeline.setParameters(parameters);
+        for (final Entry<String, URI> port : inputPorts.entrySet())
+        {
+            pipeline.bindInputPortToResource(port.getKey(), port.getValue());
+        }
+
+        final PipelineResult result = pipeline.execute();
+
+        for (final Entry<String, URI> port : outputPorts.entrySet())
+        {
+            result.readDocument(port.getKey(), port.getValue());
+        }
     }
 
     public static void main(final String[] args) throws Exception
