@@ -42,8 +42,8 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.trancecode.logging.Logger;
 import org.trancecode.opts.AbstractLog4jLauncher;
+import org.trancecode.opts.Argument;
 import org.trancecode.opts.Command;
-import org.trancecode.opts.Name;
 import org.trancecode.opts.Option;
 import org.trancecode.opts.Options;
 import org.trancecode.xproc.api.Pipeline;
@@ -76,31 +76,36 @@ public final class JaxprocLauncher extends AbstractLog4jLauncher implements Runn
     private URI pipelineUri;
 
     @Option(shortName = "i", longName = "input-port", description = "Bind an input port to a ressource")
-    public void bindInputPort(@Name("NAME=URI") final String binding)
+    @Argument(label = "NAME=URI", pattern = "^([^=]+)=([^=]+)$")
+    public void bindInputPort(final String binding)
     {
         // TODO
     }
 
     @Option(shortName = "o", longName = "output-port", description = "Bind an input port to a ressource")
-    public void bindOutputPort(@Name("NAME=URI") final String binding)
+    @Argument(label = "NAME=URI", pattern = "^([^=]+)=([^=]+)$")
+    public void bindOutputPort(final String binding)
     {
         // TODO
     }
 
     @Option(shortName = "x", longName = "xpl", description = "XProc pipeline to load and run")
-    public void setPipelineUri(@Name("URI") final String pipelineUri)
+    @Argument(label = "URI")
+    public void setPipelineUri(final String pipelineUri)
     {
         this.pipelineUri = URI.create(pipelineUri);
     }
 
     @Option(shortName = "l", longName = "library", description = "XProc pipeline library to load")
-    public void setLibraryUri(@Name("URI") final String libraryUri)
+    @Argument(label = "URI")
+    public void setLibraryUri(final String libraryUri)
     {
         this.libraryUri = URI.create(libraryUri);
     }
 
     @Option(shortName = "c", longName = "classpath", description = "Add some URL to the classpath", multiple = true)
-    public void addClasspathUrl(@Name("URL") final String url)
+    @Argument(label = "URL")
+    public void addClasspathUrl(final String url)
     {
         try
         {
@@ -113,23 +118,17 @@ public final class JaxprocLauncher extends AbstractLog4jLauncher implements Runn
     }
 
     @Option(shortName = "O", longName = "option", description = "Passes an option to the pipeline", multiple = true)
-    public void setOption(@Name("KEY=VALUE") final String option)
+    @Argument(label = "KEY=VALUE", pattern = "^([^=]+)=([^=]+)$")
+    public void setOption(final QName name, final String value)
     {
-        Preconditions.checkArgument(option.matches(VARIABLE_REGEX), "option does not match <name=value> pattern: %s",
-                option);
-        final QName name = QName.valueOf(option.replaceAll(VARIABLE_REGEX, "$1"));
-        final String value = option.replaceAll(VARIABLE_REGEX, "$2");
         Preconditions.checkState(!options.containsKey(name), "option is set more than once: %s", name);
         options.put(name, value);
     }
 
     @Option(shortName = "P", longName = "parameter", description = "Passes a parameter to the pipeline", multiple = true)
-    public void setParameter(@Name("KEY=VALUE") final String parameter)
+    @Argument(label = "KEY=VALUE", pattern = "^([^=]+)=([^=]+)$")
+    public void setParameter(final QName name, final String value)
     {
-        Preconditions.checkArgument(parameter.matches(VARIABLE_REGEX),
-                "parameter does not match <name=value> pattern: %s", parameter);
-        final QName name = QName.valueOf(parameter.replaceAll(VARIABLE_REGEX, "$1"));
-        final String value = parameter.replaceAll(VARIABLE_REGEX, "$2");
         Preconditions.checkState(!parameters.containsKey(name), "parameter is set more than once: %s", name);
         parameters.put(name, value);
     }
