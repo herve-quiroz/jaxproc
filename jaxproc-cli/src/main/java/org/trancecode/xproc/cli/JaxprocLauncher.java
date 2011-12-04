@@ -55,7 +55,6 @@ import org.trancecode.xproc.api.PipelineResult;
 @Command("java -jar jaxproc.jar")
 public final class JaxprocLauncher extends AbstractLog4jLauncher implements Runnable
 {
-    private static final String VARIABLE_REGEX = "([^=]+)=([^=]+)";
     private static final Logger LOG = Logger.getLogger(JaxprocLauncher.class);
     private static final BiMap<String, String> PIPELINE_FACTORY_CLASS_ALIASES;
 
