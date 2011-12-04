@@ -27,7 +27,6 @@ import com.google.common.collect.Maps;
 import com.google.common.io.Resources;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -95,30 +94,23 @@ public final class JaxprocLauncher extends AbstractLog4jLauncher implements Runn
 
     @Option(shortName = "x", longName = "xpl", description = "XProc pipeline to load and run")
     @Argument(label = "URI")
-    public void setPipelineUri(final String pipelineUri)
+    public void setPipelineUri(final URI pipelineUri)
     {
-        this.pipelineUri = URI.create(pipelineUri);
+        this.pipelineUri = pipelineUri;
     }
 
     @Option(shortName = "l", longName = "library", description = "XProc pipeline library to load")
     @Argument(label = "URI")
-    public void setLibraryUri(final String libraryUri)
+    public void setLibraryUri(final URI libraryUri)
     {
-        this.libraryUri = URI.create(libraryUri);
+        this.libraryUri = libraryUri;
     }
 
     @Option(shortName = "c", longName = "classpath", description = "Add some URL to the classpath", multiple = true)
     @Argument(label = "URL")
-    public void addClasspathUrl(final String url)
+    public void addClasspathUrl(final URL url)
     {
-        try
-        {
-            classpath.add(new URL(url));
-        }
-        catch (final MalformedURLException e)
-        {
-            throw new IllegalArgumentException(url, e);
-        }
+        classpath.add(url);
     }
 
     @Option(shortName = "O", longName = "option", description = "Passes an option to the pipeline", multiple = true)
