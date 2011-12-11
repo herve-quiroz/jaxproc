@@ -21,7 +21,6 @@ import javax.xml.transform.URIResolver;
 import org.trancecode.xproc.PipelineConfiguration;
 import org.trancecode.xproc.PipelineProcessor;
 import org.trancecode.xproc.Tubular;
-import org.trancecode.xproc.XProcException;
 import org.trancecode.xproc.api.Pipeline;
 import org.trancecode.xproc.api.PipelineFactory;
 import org.trancecode.xproc.api.XProcProperties;
@@ -42,14 +41,7 @@ public final class TubularPipelineFactory extends PipelineFactory
         }
 
         final PipelineProcessor processor = new PipelineProcessor(configuration);
-        try
-        {
-            return new TubularPipeline(processor.buildPipeline(pipelineSource).load());
-        }
-        catch (final XProcException e)
-        {
-            throw TubularExceptions.toXProcException(e);
-        }
+        return new TubularPipeline(processor.buildPipeline(pipelineSource).load());
     }
 
     @Override

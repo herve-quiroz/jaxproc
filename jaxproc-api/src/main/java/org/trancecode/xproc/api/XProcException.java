@@ -64,7 +64,7 @@ public final class XProcException extends PipelineException
                 parameters);
     }
 
-    private XProcException(final QName name, final Type type, final int code, final Location location,
+    public XProcException(final QName name, final Type type, final int code, final Location location,
             final String message, final Object... parameters)
     {
         super(message, parameters);

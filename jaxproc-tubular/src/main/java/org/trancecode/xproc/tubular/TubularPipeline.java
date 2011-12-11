@@ -26,7 +26,6 @@ import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 
 import org.trancecode.xproc.RunnablePipeline;
-import org.trancecode.xproc.XProcException;
 import org.trancecode.xproc.api.Pipeline;
 import org.trancecode.xproc.api.PipelineResult;
 
@@ -70,15 +69,7 @@ public final class TubularPipeline extends Pipeline
     @Override
     public PipelineResult execute()
     {
-        final org.trancecode.xproc.PipelineResult result;
-        try
-        {
-            result = pipeline.run();
-        }
-        catch (final XProcException e)
-        {
-            throw TubularExceptions.toXProcException(e);
-        }
+        final org.trancecode.xproc.PipelineResult result = pipeline.run();
 
         for (final Entry<String, Result> outputPortBinding : outputPortBindings.entrySet())
         {
