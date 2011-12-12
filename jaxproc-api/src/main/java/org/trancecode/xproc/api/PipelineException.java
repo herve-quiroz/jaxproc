@@ -15,6 +15,8 @@
  */
 package org.trancecode.xproc.api;
 
+import javax.xml.stream.Location;
+
 /**
  * Base {@link Exception} class.
  * 
@@ -23,6 +25,8 @@ package org.trancecode.xproc.api;
 public class PipelineException extends RuntimeException
 {
     private static final long serialVersionUID = -6526395636375195539L;
+
+    private Location location;
 
     public PipelineException()
     {
@@ -59,5 +63,23 @@ public class PipelineException extends RuntimeException
         {
             return message;
         }
+    }
+
+    protected PipelineException setLocation(final Location location)
+    {
+        this.location = location;
+        return this;
+    }
+
+    public String getMessageAndLocation()
+    {
+        final StringBuilder buffer = new StringBuilder();
+        if (location != null)
+        {
+            buffer.append("At: ").append(location).append("\n");
+        }
+
+        buffer.append(getMessage());
+        return buffer.toString();
     }
 }

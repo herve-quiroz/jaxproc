@@ -73,6 +73,7 @@ public final class XProcException extends PipelineException
         this.code = code;
         this.location = location;
         this.name = name;
+        setLocation(location);
     }
 
     public QName getName()
