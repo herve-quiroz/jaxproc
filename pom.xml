@@ -123,7 +123,6 @@
 
     <module>jaxproc-api</module>
     <module>jaxproc-cli</module>
-    <module>jaxproc-tubular</module>
 
   </modules>
 
@@ -147,12 +146,6 @@
       <dependency>
         <groupId>org.trancecode.xproc.jaxproc</groupId>
         <artifactId>jaxproc-api</artifactId>
-        <version>0.1.0-SNAPSHOT</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.trancecode.xproc.jaxproc</groupId>
-        <artifactId>jaxproc-tubular</artifactId>
         <version>0.1.0-SNAPSHOT</version>
       </dependency>
 

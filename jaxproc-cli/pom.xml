@@ -42,11 +42,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.trancecode.xproc.jaxproc</groupId>
-      <artifactId>jaxproc-tubular</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
       <version>1.2.16</version>
