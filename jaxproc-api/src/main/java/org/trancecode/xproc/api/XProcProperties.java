@@ -22,4 +22,9 @@ public final class XProcProperties
 {
     public static final String MESSAGE_LOGGER = "org.trancecode.xproc.api.MessageLogger";
     public static final String URI_RESOLVER = "javax.xml.transform.URIResolver";
+
+    private XProcProperties()
+    {
+        // No instantiation
+    }
 }
