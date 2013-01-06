@@ -26,26 +26,43 @@ public class PipelineException extends RuntimeException
 {
     private static final long serialVersionUID = -6526395636375195539L;
 
-    private Location location;
+    private final Location location;
 
     public PipelineException()
     {
         super();
+        location = null;
     }
 
     public PipelineException(final String message, final Object... parameters)
     {
         super(format(message, parameters));
+        location = null;
     }
 
     public PipelineException(final Throwable cause)
     {
         super(cause);
+        location = null;
     }
 
     public PipelineException(final Throwable cause, final String message, final Object... parameters)
     {
         super(format(message, parameters), cause);
+        location = null;
+    }
+
+    public PipelineException(final Throwable cause, final Location location, final String message,
+            final Object... parameters)
+    {
+        super(format(message, parameters), cause);
+        this.location = location;
+    }
+
+    public PipelineException(final Location location, final String message, final Object... parameters)
+    {
+        super(format(message, parameters));
+        this.location = location;
     }
 
     protected static String format(final String message, final Object... parameters)
@@ -65,10 +82,9 @@ public class PipelineException extends RuntimeException
         }
     }
 
-    protected final PipelineException setLocation(final Location location)
+    public final Location getLocation()
     {
-        this.location = location;
-        return this;
+        return location;
     }
 
     public final String getMessageAndLocation()

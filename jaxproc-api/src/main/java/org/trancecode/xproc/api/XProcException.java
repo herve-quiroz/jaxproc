@@ -55,7 +55,6 @@ public final class XProcException extends PipelineException
 
     private final Type type;
     private final int code;
-    private final Location location;
     private final QName name;
 
     public XProcException(final Type type, final int code, final Location location, final String message,
@@ -68,13 +67,11 @@ public final class XProcException extends PipelineException
     public XProcException(final QName name, final Type type, final int code, final Location location,
             final String message, final Object... parameters)
     {
-        super(message, parameters);
+        super(location, message, parameters);
 
         this.type = type;
         this.code = code;
-        this.location = location;
         this.name = name;
-        setLocation(location);
     }
 
     public QName getName()
@@ -85,11 +82,6 @@ public final class XProcException extends PipelineException
     public int getCode()
     {
         return code;
-    }
-
-    public Location getLocation()
-    {
-        return location;
     }
 
     private static String getLabel(final Type type, final int code)
