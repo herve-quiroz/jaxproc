@@ -40,7 +40,8 @@ import javax.xml.namespace.QName;
 import javax.xml.transform.stream.StreamSource;
 
 import org.trancecode.logging.Logger;
-import org.trancecode.opts.AbstractLog4jLauncher;
+import org.trancecode.logging.simple.SimpleLoggerManager;
+import org.trancecode.opts.AbstractSimpleLoggingLauncher;
 import org.trancecode.opts.Argument;
 import org.trancecode.opts.Command;
 import org.trancecode.opts.Option;
@@ -53,9 +54,9 @@ import org.trancecode.xproc.api.PipelineResult;
  * @author Herve Quiroz
  */
 @Command("java -jar jaxproc.jar")
-public final class JaxprocLauncher extends AbstractLog4jLauncher implements Runnable
+public final class JaxprocLauncher extends AbstractSimpleLoggingLauncher implements Runnable
 {
-    private static final Logger LOG = Logger.getLogger(JaxprocLauncher.class);
+    private static final Logger LOG = Logger.getLogger();
     private static final BiMap<String, String> PIPELINE_FACTORY_CLASS_ALIASES;
 
     static
@@ -63,6 +64,7 @@ public final class JaxprocLauncher extends AbstractLog4jLauncher implements Runn
         final Builder<String, String> aliases = ImmutableBiMap.builder();
         aliases.put("tubular", "org.trancecode.xproc.tubular.TubularPipelineFactory");
         PIPELINE_FACTORY_CLASS_ALIASES = aliases.build();
+        SimpleLoggerManager.setLogFileNamePrefix("jaxproc");
     }
 
     private final List<URL> classpath = Lists.newArrayList();
@@ -150,6 +152,7 @@ public final class JaxprocLauncher extends AbstractLog4jLauncher implements Runn
         System.out.println(getLauncherInformation());
         setupClassLoader();
         System.out.println(PipelineFactory.newInstance());
+        System.out.println("Library URI: " + libraryUri);
     }
 
     @Option(shortName = "L", longName = "list-processors", description = "List available XProc processors and exit", exit = true)
