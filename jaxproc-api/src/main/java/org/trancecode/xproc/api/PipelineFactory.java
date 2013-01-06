@@ -111,7 +111,7 @@ public abstract class PipelineFactory
     @Override
     public final String toString()
     {
-        return String.format("%s version %s (c) %s\n%s\nXProc version: %s\nXPath version: %s", getProductName(),
+        return String.format("%s version %s (c) %s%n%s%nXProc version: %s%nXPath version: %s", getProductName(),
                 getVersion(), getVendor(), getVendorUri(), getXProcVersion(), getXPathVersion());
     }
 }
