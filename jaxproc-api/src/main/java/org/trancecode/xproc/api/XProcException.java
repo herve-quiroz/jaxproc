@@ -25,7 +25,8 @@ public final class XProcException extends PipelineException
 {
     private static final long serialVersionUID = -4241443703311041795L;
 
-    public static enum Type {
+    public static enum Type
+    {
         STATIC
         {
             @Override
