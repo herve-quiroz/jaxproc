@@ -65,13 +65,13 @@ public class PipelineException extends RuntimeException
         }
     }
 
-    protected PipelineException setLocation(final Location location)
+    protected final PipelineException setLocation(final Location location)
     {
         this.location = location;
         return this;
     }
 
-    public String getMessageAndLocation()
+    public final String getMessageAndLocation()
     {
         final StringBuilder buffer = new StringBuilder();
         if (location != null)
