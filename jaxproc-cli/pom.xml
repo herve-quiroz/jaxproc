@@ -14,6 +14,10 @@
   <artifactId>jaxproc-cli</artifactId>
   <packaging>jar</packaging>
 
+  <properties>
+    <package.uber-jar.mainClass>org.trancecode.xproc.cli.JaxprocLauncher</package.uber-jar.mainClass>
+  </properties>
+
   <dependencies>
 
     <dependency>
@@ -49,44 +53,6 @@
 
   <build>
     <plugins>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            <configuration>
-              <transformers>
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                  <mainClass>org.trancecode.xproc.cli.JaxprocLauncher</mainClass>
-                </transformer>
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
-              </transformers>
-              <artifactSet>
-                <excludes>
-                  <exclude>xalan:xalan</exclude>
-                  <exclude>xml-apis:xml-apis</exclude>
-                  <exclude>xml-apis:xml-apis-ext</exclude>
-                </excludes>
-              </artifactSet>
-              <filters>
-                <filter>
-                  <artifact>*:*</artifact>
-                  <excludes>
-                    <exclude>META-INF/*.SF</exclude>
-                    <exclude>META-INF/*.DSA</exclude>
-                    <exclude>META-INF/*.RSA</exclude>
-                  </excludes>
-                </filter>
-              </filters>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
