@@ -224,7 +224,7 @@ public final class JaxprocLauncher extends AbstractSimpleLoggingLauncher impleme
         }
     }
 
-    public static void main(final String[] args) throws Exception
+    public static void main(final String... args) throws Exception
     {
         Options.execute(JaxprocLauncher.class, args);
     }
